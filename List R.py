@@ -55,6 +55,14 @@ class listr:
             a = a.next
         else:
             yield a.data()
+    def listr(self):
+        if self.head == None: return None
+        a = self.head
+        while a.next != None:
+            yield a
+            a = a.next
+        else:
+            yield a
 
     def Head(self,var):
         if self.head == None:
@@ -87,7 +95,7 @@ class listr:
 
             return a
 
-    def rewrites(self,number,value):
+    def rewrit(self,number,value):
         self.find(number).val = value
 
     def pop(self,number = None):
@@ -125,7 +133,6 @@ l.append(2)
 for i in range(3,10):
     l.append(i)
 print(l.head.data(),l.last.data())
-
 l.Head(-6)
 l1 = listr()
 print(list(l.show()))
