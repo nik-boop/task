@@ -1,0 +1,52 @@
+class BankAccountRUB:
+    def __init__(self,rub,cop):
+        self.bs = []
+        self.new_bs(rub,cop)
+    def new_bs(self,rub,cop):
+        self.bs.append([int(rub + cop//100),int(cop%100)])
+    def del_bs(self,n):
+        self.bs.pop(n)
+    def __del__(self):
+        print("Аккаун удалё")
+    def __str__(self):
+        s=""
+        for i in self.bs:
+            s+= f"{i[0]}руб {i[1]}коп\n"
+        return s
+account_rub = BankAccountRUB(76,225)
+print(account_rub)
+class BankAccountUSD(BankAccountRUB):
+    def __init__(self,rub,cop,k=74.25):
+        self.k = k
+        self.bs=[]
+        self.new_bs(rub,cop)
+    def __str__(self):
+        s = ""
+        for i in self.bs:
+            if i[2] == "r":
+                s += f"{i[0]}руб {i[1]}коп\n"
+            elif i[2]=="u":
+                s+= f"{i[0]} dollars and {i[1]} cents\n"
+        return s
+    def new_bs(self,rub,cop,k=None):
+        if k is None: k = self.k
+        super().new_bs(rub,cop)
+        self.bs[len(self.bs)-1].append("r")
+        d = rub + cop / 100
+        d = d / k
+        self.bs.append([round(d), int(round(d % 1,2)*100), "u"])
+    def __mod__(self, other):
+        other = other/100
+        sm = self.bs[0][0]+self.bs[0][1]/100
+        sm*=other
+        a = BankAccountUSD(round(sm),round(sm%1,2)*100,self.k)
+        for i in self.bs[2::2]:
+            sm = i[0] + i[1] / 100
+            sm *= other
+            a.new_bs(round(sm),round(sm%1,2)*100)
+        return a
+
+account_usd = BankAccountUSD(148,50)
+account_usd.new_bs(124,2)
+print(account_usd)
+print(account_usd%50)
