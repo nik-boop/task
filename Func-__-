@@ -1,0 +1,97 @@
+class Cord:
+    def __init__(self,*args,**kwargs):
+        self.cord = []
+        self.n = 0
+        for i in kwargs:
+            self.cord.append(i)
+            self.n+=1
+        for i in args:
+            self.cord.append(i)
+            self.n+=1
+    def summ(self,cord=None):
+        if cord is None: cord = self.cord
+        for i in range(len(cord)+1):
+            if cord[i][0]*cord[(i+1)%len(cord)][1]-cord[(i+1)%len(cord)][0]*cord[i][1] < 0:
+                return -1
+            else:
+                return 1
+
+    def S (self,cord=None):
+        if cord is None: cord = self.cord
+        sm = 0
+        for i in range(len(cord)):
+            sm += cord[i][0]*cord[(i+1)%len(cord)][1]-cord[i][1]*cord[(i+1)%len(cord)][0]
+        return abs(sm)/2
+    def Ang(self,cord=None):
+        if cord is None: cord = self.cord
+        lm = None
+        coord = ()
+        for i in cord:
+            if lm is None or lm>(i[0]**2+i[1]**2)**0.5:
+                lm = (i[0]**2+i[1]**2)**0.5
+                coord = i
+        return coord
+    def long_s(self,cord=None):
+        if cord is None: cord = self.cord
+        lm = None
+        coord = None
+        for i in range(len(cord)):
+            if lm is None or lm < ((cord[(i+1)%len(cord)][0]-cord[i][0]) ** 2 + (cord[(i+1)%len(cord)][1]-cord[i][1]) ** 2) ** 0.5:
+                lm = ((cord[(i+1)%len(cord)][0]-cord[i][0]) ** 2 + (cord[(i+1)%len(cord)][1]-cord[i][1]) ** 2) ** 0.5
+                coord = (cord[i],cord[(i+1)%len(cord)])
+        return coord,round(lm,3)
+    def perm(self,cord=None):
+        if cord is None: cord = self.cord
+        pr = 0
+        for i in range(len(cord)):
+            pr += ((cord[(i+1)%len(cord)][0]-cord[i][0]) ** 2 + (cord[(i+1)%len(cord)][1]-cord[i][1]) ** 2) ** 0.5
+        return round(pr,2)
+    def min_ar(self,coord=None):
+        if coord is None: coord = [self.cord]
+        sm = None
+        fg = None
+        for i in coord:
+            if sm is None or sm<self.S(i):
+                sm = self.S(i)
+                fg = i
+        return round(sm,2), i
+    def incl_p(self,A,P=None):
+        if P is None: P = self.cord
+
+        def rotate(A, B, C):
+            return (B[0] - A[0]) * (C[1] - B[1]) - (B[1] - A[1]) * (C[0] - B[0])
+
+        def intersect(A, B, C, D):
+            return rotate(A, B, C) * rotate(A, B, D) <= 0 and rotate(C, D, A) * rotate(C, D, B) < 0
+
+        def pointloc(P, A):
+            n = len(P)
+            if rotate(P[0], P[1], A) < 0 or rotate(P[0], P[n - 1], A) > 0:
+                return False
+
+        p, r = 1, len(P) - 1
+        while r - p > 1:
+            q = (p + r) // 2
+            if rotate(P[0], P[q], A) < 0:
+                r = q
+            else:
+                p = q
+        return not intersect(P[0], A, P[p], P[r])
+
+
+
+
+
+c = Cord((1,7),(4,9),(6,7),(3,5),(1,5))
+c1 = Cord((3,4), (5,11), (12,8), (9,5), (5,6))
+print(c.summ())
+print(c1.summ())
+print(c1.S())
+print(c.Ang())
+print(c1.Ang())
+print(c.long_s())
+print(c.perm())
+print(c.min_ar())
+print(c.incl_p((2,6)))
+
+print(c.cord)
